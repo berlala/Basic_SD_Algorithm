@@ -4,5 +4,7 @@
 /slprj/
 
 #ignore slxc,asv
-*.asv
-*slxc 
+*asv
+*slxc
+*mexw32
+*mexw64
