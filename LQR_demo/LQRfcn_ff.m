@@ -14,14 +14,14 @@ Cr = Cf;
 m  = 2300;
 %% Config
 
-Preview  = 0; % bigger value will lead failure [to be explored]
+Preview  = 1; % bigger value will lead failure [to be explored]
 L = 3;% wheelbase
 
 %%
 %cx  =x;
-%cy = y; 
-%cyaw = psi; 
-%ck = CurvDerVehMap; 
+%cy = y;
+%cyaw = psi;
+%ck = CurvDerVehMap;
 initial_ENH = [x_c, y_c, psi_c];  % current vehicle state
 
 %[ind] = findinitwaypoints(initial_ENH, RouteMapArray);
@@ -32,7 +32,13 @@ tgt = min(ind+Preview, length(RouteMapArray(:,1)));
 x_tg = RouteMapArray(tgt,1);
 y_tg = RouteMapArray(tgt,2);
 
+%x_tg = 30.1738;
+%y_tg = 30.1601;
+
 psi_tg= RouteMapArray(tgt,3);
+%psi_tg = 1.5764;
+
+
 k = CurvDerVehMap(tgt);
 
 %e = sqrt((x_tg-x_c)^2 +(y_tg-y_c)^2);
@@ -45,30 +51,33 @@ Ac = [0, 1, 0, 0;
       0, -(2*Cf+2*Cr)/(m*v), (2*Cf+2*Cr)/m, (-2*Cf*lf + 2*Cr*lr)/(m*v);
       0, 0, 0 ,1;
       0, -(2*Cf*lf-2*Cr*lr)/(Iz*v), (2*Cf*lf-2*Cr*lr)/Iz, (-2*Cf*lf^2+2*Cr*lr^2)/(Iz*v)];
-Bc = [0 2*Cf/m, 0, 2*Cf*lf/Iz]'; 
+Bc = [0 2*Cf/m, 0, 2*Cf*lf/Iz]';
 sys =ss(Ac, Bc,[],[]);
 sysd = c2d(sys,dt);
 A = sysd.a;
 B = sysd.b;
 
 Q = eye(4);
-Q(1,1) = 100;
+Q(1,1) = 5; %big value lead failure [To be explored]: This value should be related to the initial error...
+%... try sqrt(1/Q(1,1)) = max_initial_error
 Q(2,2) = 1;
 Q(3,3) = 1;
 Q(4,4) = 1;
 
 R = eye(1);
 
-%coder.extrinsic('dlqr'); 
+%coder.extrinsic('dlqr');
 [K_lqr, ~, ~ ]= dlqr(A, B, Q, R);
 %K_lqr = [0.1,0.1,0.1,0.1];
 
-% pe_1= e; 
+% pe_1= e;
 % pth_e_1 = th_e;
 % Local Coorid
-Heading = -(initial_ENH(3) )*180/pi;
-RotMat = [cosd(Heading), -sind(Heading); ...
-          sind(Heading), cosd(Heading)];
+Heading = (initial_ENH(3) )*180/pi;
+RotMat = [cosd(Heading), sind(Heading); ...
+          -sind(Heading), cosd(Heading)];
+pt0lc = RotMat*[RouteMapArray(ind,1)-x_c,...
+                RouteMapArray(ind,2)-y_c]';
 pt1lc = RotMat*[RouteMapArray(tgt,1)-x_c,...
                 RouteMapArray(tgt,2)-y_c]';
 %             if pt1lc(2)<0 % in case the direction is reverse
@@ -76,14 +85,15 @@ pt1lc = RotMat*[RouteMapArray(tgt,1)-x_c,...
 %             else
 %                 dict =1;
 %             end
-if psi_tg < initial_ENH(3) 
-    dict = 1;
-else
-    dict =-1;
+sign_stan = 0;
+if sign(pt0lc(2))== sign(pt1lc(2))==1 %same side
+    sign_stan = double(sign(pt1lc(2)));
+elseif (sign(pt0lc(2))== sign(pt1lc(2)))==0
+    sign_stan = double(sign(pt0lc(2)));
 end
 
 %e = pt1lc(2);
-e = df*dict;
+e = df*-sign_stan; % REASON [??]
 X = zeros(4, 1);%# State  [Position_Error, Position_Error_dot, Heading_error, Heading_error_dot]
 X(1, 1) =  e;   
 X(2, 1) = (e - pe) / dt;
@@ -96,7 +106,7 @@ ff = atan2(L * k, 1) ;  %[rad]
 fb = -K_lqr *X;  %[rad]
 %fb_a = rem((fb) ,(2*pi))-2*pi ;
 
-P_ff = 1.5;
+P_ff = 0;
 delta = P_ff*ff + fb;% delta is the Desired front wheel steering angle  [rad]
 %less than 2.8 will go failure. [To be explored]
 

@@ -11,16 +11,16 @@ v        = 1; %m/s
 Lf =3;%[m]
 
 x_init    = 0;
-y_init    =-1;
-psi_init  = -0.2;
+y_init    = -1;
+psi_init  = 0;
 
 %%
-%load WP_LT_02;
+load WP_LT_02;
 %load WP_LT_05;
 %load WP_LT_10;
 
 %load WP_UT_02;
-load WP_LC_05;
+%load WP_LC_05;
 %load WP_UT_10.mat;
 %load WP_LC_10.mat;
 
@@ -60,7 +60,7 @@ y_c =y_init;
 psi_c = psi_init;
 
 hwait=waitbar(0,'In Process>>>>>>>>');
-time = 300;
+time = 500;
 for i = 1:time
  
 waitbar(i/time,hwait,'In Process>>>>');
