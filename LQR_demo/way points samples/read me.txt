@@ -1,0 +1,12 @@
+name of the mat files:
+WP - way point
+LC - lane change
+LT - 90 deg left turn
+UT - U turn
+02 - nearby way point distance 0.2 meter
+05 - nearby way point distance 0.5 meter
+10 - nearby way point distance 1 meter
+
+
+mat file data:
+[x y heading curvature distance]
