@@ -1,26 +1,24 @@
 %% Quintic Plan Plan 
 % Bolin Zhao , FF China, bolin.zhao@ff.com
 %%
-function [xt_log, vt_log, at_log, jt_log] = quintic_planner(xs, vxs,axs,xg,vxg,axg,T,t) 
+function [xt_log, vt_log, at_log, jt_log] = quintic_planner_x(xs, vxs,axs,xe,vxe,axe,T,t) 
 
-A = [0,0, 0,0,0,1;
-         0,0,0,0,1,0;
-         0,0,0,2,0,0; 
-         T^5, T^4, T^3, T^2, T, 1;
-         5*T^4, 4*T^3, 3*T^2, 2*T, 1, 0;
-         20*T^3, 12*T^2, 6*T, 2, 0,0];
-        
+A = [T^3, T^4, T^5;
+         3*T^2, 4*T^3, 5*T^4;
+         6*T, 12*T^2, 20*T^3];
      
-B = [xs,vxs,axs,xg,vxg, axg]';
-  
-x  = linsolve(A, B); % A*[k0~k5]'=B, To solve all the coefficient
-
-k0 = x(6);
-k1 = x(5);
-k2 = x(4);
-k3 = x(3);
+B = [xe-xs-vxs*T-axs*T^2,
+        vxe-vxs-2*axs*T,
+        axe-2*axs];
+   
+x  = linsolve(A, B); % A*X =B, To solve all the coefficient
+ 
+k0 = xs;
+k1 = vxs;
+k2 = axs/2;
+k3 = x(1);
 k4 = x(2);
-k5 = x(1);
+k5 = x(3);
 
 xt_log = [];
 vt_log = [];

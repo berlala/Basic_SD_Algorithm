@@ -6,7 +6,7 @@ clc;clear;close all
 V_Threshold =30;
 Acc_Threshold =3; % m/s^2
 Jerk_Threshold = 0.5; % m/s^3
-T_Max =  100; % Max Allow Time 
+T_Max =  200; % Max Allow Time 
 t = 0.1;
 %% States
 % Start State
