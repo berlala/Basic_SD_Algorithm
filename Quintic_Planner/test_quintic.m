@@ -7,21 +7,21 @@ V_Threshold =30;
 Acc_Threshold =3; % m/s^2
 Jerk_Threshold = 0.5; % m/s^3
 T_Max =  200; % Max Allow Time 
-t = 0.1;
+t = 0.01;
 %% States
 % Start State
-xs = 10;
-ys = 10;
-vxs =-1;
+xs = 0;
+ys = 0;
+vxs = 5;
 vys = 0;
 axs =0.1;
 ays = 0;
 
 
 % End State
-xg = 50;
-yg = 20;
-vxg = 10;
+xg = 30;
+yg =  5;
+vxg = 5;
 vyg = 0;
 axg =0;
 ayg = 0;
@@ -33,7 +33,38 @@ Result_true = 0;
 [xt,vxt,axt,jxt] = quintic_planner(xs, vxs,axs,xg,vxg,axg,T,t) ;
 [yt,vyt,ayt,jyt] = quintic_planner(ys, vys,ays,yg,vyg,ayg,T,t) ;
 
+K2 = [];
 for i = 1:length(xt)
+
+ % Calculate the Curvature 
+   if i-1<1
+      i =2;
+  else if i+1> length(xt)
+          i =  length(xt)-1;
+      end
+  end
+  x_0 = xt(i-1);
+  x_1 = xt(i);
+  x_2 = xt(i+1);
+  y_0 = yt(i-1);
+  y_1 = yt(i);
+  y_2 = yt(i+1);
+
+ % Method (1)
+Heading = atan((y_2-y_0)/(x_2-x_0));
+RotMat = [cos(Heading), sin(Heading); ...
+                 -sin(Heading), cos(Heading)];
+A_rot = RotMat*[x_1-x_0,y_1-y_0]';
+if A_rot(2) >0
+    d  = -1;
+else
+    d = 1;
+end
+K1(i) = d*abs(vxt(i)*ayt(i) - axt(i)*vyt(i))/((vxt(i)^2+ vyt(i)^2)^1.5); % Continue-Method, cannot directly use on distert domain
+ % Method (2)
+%  [K2(i)] = curvature_cal(x_0,x_1,x_2,y_0,y_1,y_2);
+
+    
     if sqrt(axt(i)^2+ayt(i)^2)>Acc_Threshold|| sqrt(jxt(i)^2+jxt(i)^2)>Jerk_Threshold || sqrt(vxt(i)^2+vyt(i)^2)>V_Threshold
         Result_true = 1 ; % the condition to accept the effective result.
     else
@@ -78,3 +109,6 @@ plot(time, v);hold on
 plot(time,a)
 plot(time,jerk)
 legend('Velocity[m/s]','Acceleration','Jerk')
+
+figure(3)
+plot(time(2:end),K1)
