@@ -58,11 +58,11 @@ A = sysd.a;
 B = sysd.b;
 
 Q = eye(4);
-Q(1,1) = 5; %big value lead failure [To be explored]: This value should be related to the initial error...
+Q(1,1) = 40; %big value lead failure [To be explored]: This value should be related to the initial error...
 %... try sqrt(1/Q(1,1)) = max_initial_error
-Q(2,2) = 1;
-Q(3,3) = 1;
-Q(4,4) = 1;
+Q(2,2) = 3;
+Q(3,3) = 10;
+Q(4,4) =3;
 
 R = eye(1);
 

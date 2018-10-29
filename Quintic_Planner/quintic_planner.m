@@ -7,35 +7,35 @@ A = [T^3, T^4, T^5;
          3*T^2, 4*T^3, 5*T^4;
          6*T, 12*T^2, 20*T^3];
      
-b = [xe-xs-vxs*T-axs*T^2,
+B = [xe-xs-vxs*T-axs*T^2,
         vxe-vxs-2*axs*T,
         axe-2*axs];
    
-x  = linsolve(A, b);
+x  = linsolve(A, B); % A*X =B, To solve all the coefficient
 
-a0 = xs;
-a1 = vxs;
-a2 = axs;
-a3 = x(1);
-a4 = x(2);
-a5 = x(3);
+k0 = xs;
+k1 = vxs;
+k2 = axs;
+k3 = x(1);
+k4 = x(2);
+k5 = x(3);
 
 xt_log = [];
 vt_log = [];
 at_log =[];
 jt_log =[];
 
-for ts = 0:t:T
-    xt = a0 + a1* ts + a2*ts^2 + a3*ts^3 + a4*ts^4 + a5*ts^5;
+for ts = 0:t:T % The final result, functions based on sample time.
+    xt = k0 + k1* ts + k2*ts^2 + k3*ts^3 + k4*ts^4 + k5*ts^5;
     xt_log = [xt_log, xt];
     
-    vt = a1+ 2*a2*ts +3*a3*ts^2 + 4*a4*ts^3 + 5*a5*ts^4;
+    vt = k1+ 2*k2*ts +3*k3*ts^2 + 4*k4*ts^3 + 5*k5*ts^4;
     vt_log = [vt_log, vt];
     
-    at =  2*a2 + 6*a3*ts + 12*a4*ts^2 + 20*a5*ts^3;
+    at =  2*k2 + 6*k3*ts + 12*k4*ts^2 + 20*k5*ts^3;
     at_log = [at_log, at];
 
-    jt =  6*a3 + 24*a4*ts + 60*a5*ts^2;
+    jt =  6*k3 + 24*k4*ts + 60*k5*ts^2;
     jt_log = [jt_log, jt];
 
 end

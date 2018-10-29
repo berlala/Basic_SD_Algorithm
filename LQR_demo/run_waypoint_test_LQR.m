@@ -15,14 +15,9 @@ y_init    = -1;
 psi_init  = 0;
 
 %%
-load WP_LT_02;
-%load WP_LT_05;
-%load WP_LT_10;
+%load WP_LT_02;
+load WP_UT_02;
 
-%load WP_UT_02;
-%load WP_LC_05;
-%load WP_UT_10.mat;
-%load WP_LC_10.mat;
 
 Spiral_Msg = double(Spiral_Msg); % Force DataType change
 x = Spiral_Msg(:,1);

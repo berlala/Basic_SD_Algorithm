@@ -3,8 +3,8 @@
 % Bolin Zhao, ff china, bolin.zhao@ff.com
 %% Config
 clc;clear;close all
-V_Threshold =3;
-Acc_Threshold = 2; % m/s^2
+V_Threshold =30;
+Acc_Threshold =3; % m/s^2
 Jerk_Threshold = 0.5; % m/s^3
 T_Max =  100; % Max Allow Time 
 t = 0.1;
@@ -12,7 +12,7 @@ t = 0.1;
 % Start State
 xs = 10;
 ys = 10;
-vxs =1;
+vxs =-1;
 vys = 0;
 axs =0.1;
 ays = 0;
@@ -21,7 +21,7 @@ ays = 0;
 % End State
 xg = 50;
 yg = 20;
-vxg = 1;
+vxg = 10;
 vyg = 0;
 axg =0;
 ayg = 0;
@@ -35,7 +35,7 @@ Result_true = 0;
 
 for i = 1:length(xt)
     if sqrt(axt(i)^2+ayt(i)^2)>Acc_Threshold|| sqrt(jxt(i)^2+jxt(i)^2)>Jerk_Threshold || sqrt(vxt(i)^2+vyt(i)^2)>V_Threshold
-        Result_true = 1 ;
+        Result_true = 1 ; % the condition to accept the effective result.
     else
         Result_true = Result_true;
     end
