@@ -6,13 +6,14 @@ clc;clear;close all
 V_Threshold =30;
 Acc_Threshold =3; % m/s^2
 Jerk_Threshold = 0.5; % m/s^3
+Str_Threshold = 0.2;
 T_Max =  200; % Max Allow Time 
 t = 0.01;
 %% States
 % Start State
 xs = 0;
 ys = 0;
-vxs = 5;
+vxs = 2;
 vys = 0;
 axs =0.1;
 ays = 0;
@@ -20,8 +21,8 @@ ays = 0;
 
 % End State
 xg = 30;
-yg =  5;
-vxg = 5;
+yg =  25;
+vxg =-2;
 vyg = 0;
 axg =0;
 ayg = 0;
@@ -51,21 +52,26 @@ for i = 1:length(xt)
   y_2 = yt(i+1);
 
  % Method (1)
-Heading = atan((y_2-y_0)/(x_2-x_0));
-RotMat = [cos(Heading), sin(Heading); ...
-                 -sin(Heading), cos(Heading)];
+Heading_t = atan((y_2-y_0)/(x_2-x_0));
+RotMat = [cos(Heading_t), sin(Heading_t); ...
+                 -sin(Heading_t), cos(Heading_t)];
 A_rot = RotMat*[x_1-x_0,y_1-y_0]';
 if A_rot(2) >0
     d  = -1;
 else
     d = 1;
 end
-K1(i) = d*abs(vxt(i)*ayt(i) - axt(i)*vyt(i))/((vxt(i)^2+ vyt(i)^2)^1.5); % Continue-Method, cannot directly use on distert domain
+K1(i) = abs(vxt(i)*ayt(i) - axt(i)*vyt(i))/((vxt(i)^2+ vyt(i)^2)^1.5); % Continue-Method, cannot directly use on distert domain
+Heading(i) = atan((y_2-y_1)/(x_2-x_1));
+if Heading(i) <0
+    Heading(i) = Heading(i) +pi;
+end
  % Method (2)
 %  [K2(i)] = curvature_cal(x_0,x_1,x_2,y_0,y_1,y_2);
 
+
     
-    if sqrt(axt(i)^2+ayt(i)^2)>Acc_Threshold|| sqrt(jxt(i)^2+jxt(i)^2)>Jerk_Threshold || sqrt(vxt(i)^2+vyt(i)^2)>V_Threshold
+    if sqrt(axt(i)^2+ayt(i)^2)>Acc_Threshold|| sqrt(jxt(i)^2+jxt(i)^2)>Jerk_Threshold || sqrt(vxt(i)^2+vyt(i)^2)>V_Threshold %|| max(K1)>Str_Threshold
         Result_true = 1 ; % the condition to accept the effective result.
     else
         Result_true = Result_true;
@@ -111,4 +117,18 @@ plot(time,jerk)
 legend('Velocity[m/s]','Acceleration','Jerk')
 
 figure(3)
-plot(time(2:end),K1)
+plotyy(time(2:end),K1,time(2:end), Heading/pi*180 )
+xlabel('Time[s]')
+legend('Curvature[-]','Heading[deg]','location','best')
+
+if T < T_Max
+disp(['Final time is ', double(T)])
+else
+    disp(['Fail to find solution'])
+end
+
+%% Save Data
+Heading_in = [0,Heading];
+K1_in = [0,K1];
+Dis = zeros(1,length(xt));
+Spiral_Msg = [xt ; yt; Heading_in ;K1_in; Dis]';

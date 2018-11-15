@@ -39,12 +39,5 @@ for ts = 0:t:T % The final result, functions based on sample time.
 
     jt =  6*k3 + 24*k4*ts + 60*k5*ts^2;
     jt_log = [jt_log, jt];
-    
-    
-    
 end
-
-
-
-
 return
