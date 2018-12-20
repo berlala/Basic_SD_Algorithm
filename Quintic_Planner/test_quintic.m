@@ -20,8 +20,8 @@ ays = 0;
 
 
 % End State
-xg = 30;
-yg =  25;
+xg = 0;
+yg =  30;
 vxg =-2;
 vyg = 0;
 axg =0;
@@ -122,7 +122,7 @@ xlabel('Time[s]')
 legend('Curvature[-]','Heading[deg]','location','best')
 
 if T < T_Max
-disp(['Final time is ', double(T)])
+disp(['Final time is ', T])
 else
     disp(['Fail to find solution'])
 end
