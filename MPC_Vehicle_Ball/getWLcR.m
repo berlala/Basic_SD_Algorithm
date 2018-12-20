@@ -1,4 +1,5 @@
-function [ W, L, c] = getWLc(C,B, Xmax, Xmin, umax, umin, Gamma, Phi)
+function [ W, L, c] = getWLcR(B, Xmax, Xmin, umax, umin, Gamma, Phi)
+%   C,
 %GETWLC Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -20,8 +21,8 @@ bi          = [umax;
  bN = [Xmax;-Xmin];
 % uncomment previous 2 lines to not use the terminal set constraints
 
-% Dcal = [Mi;repmat(0*Mi,N-1,1);0*MN];
-Dcal = [Mi*C;repmat(0*Mi*C,N-1,1);0*MN*C];
+ Dcal = [Mi;repmat(0*Mi,N-1,1);0*MN];
+%Dcal = [Mi*C;repmat(0*Mi*C,N-1,1);0*MN*C];
 
 Mcal = MN;
 for i = 2:N
