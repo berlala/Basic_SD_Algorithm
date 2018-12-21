@@ -2,11 +2,11 @@
 clear all;close all;clc
 warning off
 %% initilize the system
-Ts = 0.1;
+Ts = 0.05;
 N =10;
 %Initial Position and Heading
-x_car =-5;
-y_car =-5;
+x_car =0;
+y_car =0;
 psi =0;         
 v= 1.0;
 
@@ -15,9 +15,9 @@ alpha_ini= 0; % last steering angle
 memory = [x_car,y_car,psi, v, a_ini, alpha_ini]; % Last state
 %% The destination
 x_goal = 30; 
-y_goal = 30;
-psi_goal =pi; 
-v_goal = 0.1; % stop at the end 
+y_goal = 5;
+psi_goal =0; 
+v_goal = 1.0; % stop at the end 
 
 Goal_inf = [x_goal,y_goal,psi_goal, v_goal]; 
 
@@ -43,8 +43,7 @@ while i   % Control iteration
     v_car0 = v;
     
 % [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N);
-  [a ,alpha, memory] = controller_lqr2(x_car,y_car,psi,v ,memory,Goal_inf, N);
-
+  [a ,alpha, memory] = controller_mpc(x_car,y_car,psi,v ,memory,Goal_inf, N);
    a_cmd = a
    delta_f = alpha
     
@@ -65,7 +64,7 @@ while i   % Control iteration
     a_h = [a_h, a];
     
     i = i+1;
-    if (abs(x_car - x_goal) <1&& abs(y_car - y_goal) <1 )&&abs(psi - psi_goal) <0.1 ||i >200
+    if (abs(x_car - x_goal) <0.2&& abs(y_car - y_goal) <0.2)&&abs(psi - psi_goal) <0.1 ||i >10000
         disp('reach goal')
         break
     end
@@ -77,11 +76,12 @@ end
 
 figure(1)
 plot(x_h, y_h,'ob-');
+title('Path')
 figure
 subplot(2,1,1)
 plot(v_h);
-ylabel('velocity')
+ylabel('Velocity')
 subplot(2,1,2)
 plot(delta_h);
-ylabel('Psi')
+ylabel('Front Wheel Steering Angle')
 
