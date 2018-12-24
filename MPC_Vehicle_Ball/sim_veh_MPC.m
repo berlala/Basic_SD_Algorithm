@@ -2,26 +2,28 @@
 clear all;close all;clc
 warning off
 %% initilize the system
-Ts = 0.02;
-N = 5;
+Ts = 0.05;
+N =10;
 %Initial Position and Heading
-x_car = 80;
-y_car = 30;
-psi =pi;
+x_car =0;
+y_car =0;
+psi =0;         
+v= 1.0;
 
-v_ini = 1; % initial velocity
-alpha_ini=0; % last steering angle 
-memory = [x_car,y_car,psi,alpha_ini, v_ini]; % Last state
+a_ini = 0.0; % initial acceleration
+alpha_ini= 0; % last steering angle 
+memory = [x_car,y_car,psi, v, a_ini, alpha_ini]; % Last state
 %% The destination
-x_goal = 0;
-y_goal = 30;
-psi_goal =-pi/2; 
+x_goal = 30; 
+y_goal = 5;
+psi_goal =0; 
+v_goal = 1.0; % stop at the end 
 
-Goal_inf = [x_goal,y_goal,psi_goal]; 
+Goal_inf = [x_goal,y_goal,psi_goal, v_goal]; 
 
 figure(1)
-plot(x_car,y_car,'*',x_goal,y_goal,'o')
-grid on;
+plot(x_car,y_car,'r*',x_goal,y_goal,'ro')
+grid on; 
 %legend('Initial Position','Goal','Location','best');
 hold on;
 %% MPC control iterations
@@ -29,25 +31,29 @@ x_h = [];
 y_h = [];
 v_h = [];
 delta_h = [];
+a_h = [];
 h =2;
 i = 1;
 while i   % Control iteration
     
+    %updtae the initial state
     x_car0 = x_car;
     y_car0 = y_car;
     psi0 = psi;
+    v_car0 = v;
     
- [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N);
-
-    v_cmd = v;
-    delta_f = alpha;
+% [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N);
+  [a ,alpha, memory] = controller_mpc(x_car,y_car,psi,v ,memory,Goal_inf, N);
+   a_cmd = a
+   delta_f = alpha
     
     sim bic_3.slx
     
     x_car=x_state.Data(h);
     y_car=y_state.Data(h);
     % plot(x_state.Data, y_state.Data)
-    psi=psi_state.Data(h);
+    psi= psi_state.Data(h);
+    v = v_state.Data(h);
     %plot(v_state.Data);
 
    
@@ -55,21 +61,27 @@ while i   % Control iteration
     y_h = [y_h;y_car];
     v_h = [v_h;v];
     delta_h = [delta_h, delta_f];
+    a_h = [a_h, a];
     
     i = i+1;
-    if (abs(x_car - x_goal) <1&& abs(y_car - y_goal) <1 )%&&abs(psi - psi_goal) <0.1) ||i >200
+    if (abs(x_car - x_goal) <0.2&& abs(y_car - y_goal) <0.2)&&abs(psi - psi_goal) <0.1 ||i >10000
         disp('reach goal')
         break
     end
+ 
+ figure(1)
+ plot(x_car,y_car, 'ob');hold on
     
 end
 
+figure(1)
 plot(x_h, y_h,'ob-');
+title('Path')
 figure
 subplot(2,1,1)
 plot(v_h);
-ylabel('velocity')
+ylabel('Velocity')
 subplot(2,1,2)
 plot(delta_h);
-ylabel('Psi')
+ylabel('Front Wheel Steering Angle')
 

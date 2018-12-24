@@ -1,7 +1,7 @@
 function [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N)
        %% import last step input  
         % set parameters and reference, with current state as equilibrium
-        Ts = 0.2;
+        Ts = 0.1;
         l  = 3; %cm
      % x0 = [0 0 0 0 0 0]'     
      % last step output
@@ -10,7 +10,8 @@ function [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N)
 
         % update current state of the car to the memory
 
-        x0 = [x_car - memory(1), y_car - memory(2), psi - memory(3), 0, 0, 0]';
+        %x0 = [x_car - memory(1), y_car - memory(2), psi - memory(3), 0, 0, 0]';
+         x0 = [x_car , y_car , psi , 0, 0, 0]';
         
         % Goal Position
         theta_goal = Goal_inf(3);
@@ -18,25 +19,24 @@ function [v ,alpha, memory] = controller_lqr(x_car,y_car,psi,memory,Goal_inf, N)
         y_goal = Goal_inf(2);
        %% set reference according to the position of car    
        r = [x_goal-x_car, y_goal-y_car, atan((x_goal-x_car)/(y_goal-x_car))-psi]'; % original point as the target point
-       
        Qx = 5;
        Qy = 5;
-       Qtheta = 100;
-       Rv =2000;
-       Ralpha = 100;
+       Qtheta = 10;
+       Rv =1;
+       Ralpha = 1;
        Q = diag([Qx Qy Qtheta]);
        R = diag([Rv Ralpha]);
-       P =diag([1000 1000 10]);
+       P =diag([5 5 5]); % final step cost
        
        if abs(x_car - x_goal) < 5&& abs(y_car - y_goal) <5
            Qx = 5;
            Qy = 5;
-           Qtheta = 1000;
-           Rv =100;
-           Ralpha = 1000;
+           Qtheta = 30;
+           Rv =5;
+           Ralpha = 1;
            Q = diag([Qx Qy Qtheta]);
            R = diag([Rv Ralpha]);
-           P =diag([1000 1000 10]);  
+          P =diag([1 1 10]);  % final step cost
        end
       % Bigger Q, faster reach; Bigger R, Low cost input  
 %% linaerize the system
@@ -78,8 +78,8 @@ F = 2*Gamma'*Omega*(Phi*x0-Rref);
 %% apply constraints
 Xmax = [700  , 400, 2*pi-psi]';
 Xmin = [-650, -400, -2*pi-psi]';
-umax = [20-v0,   0.6-alpha0]';
-umin = [1-v0,    -0.6-alpha0]';
+umax = [5-v0,   0.6-alpha0]'; % maximum constrain on input
+umin = [-3-v0,    -0.6-alpha0]'; % minimum constain on input
 [ W, L, c] = getWLcR(C,Bd, Xmax, Xmin, umax, umin, Gamma, Phi);
 %% solve the constraint mpc
 b = c+W*x0;% L*U<=b=c+W*x0
