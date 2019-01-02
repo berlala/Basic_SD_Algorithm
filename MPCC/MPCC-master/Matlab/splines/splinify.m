@@ -18,8 +18,8 @@ function [traj, borders] = splinify(track)
 %calculate the required spline and derivatives
 
 Tr=track.center;%(track.outer+track.inner)/2;
-Xt=Tr(1,:);
-Yt=Tr(2,:);
+Xt=Tr(1,:); %all x-coordinate for path
+Yt=Tr(2,:); %all y-coordinate for path
 % Tr = track.center;
 % Xt = track.center(1,:);
 % Yt = track.center(2,:);
@@ -29,6 +29,7 @@ Yt=Tr(2,:);
 %calculate derivatives of desired trajectory
 traj.dppx=getSplineDerivatives(traj.ppx);
 traj.dppy=getSplineDerivatives(traj.ppy);
+
 traj.ddppx=getSplineDerivatives(traj.dppx);
 traj.ddppy=getSplineDerivatives(traj.dppy);
 
