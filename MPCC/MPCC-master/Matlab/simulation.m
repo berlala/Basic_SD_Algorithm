@@ -16,7 +16,7 @@ close all
 clc
 %% add spline library
 addpath('splines');
-addpath('~/Documents/GitHub/hpipm/interfaces/matlab/hpipm_matlab')
+%addpath('~/Documents/GitHub/hpipm/interfaces/matlab/hpipm_matlab')
 %% Load Parameters
 CarModel = 'ORCA';
 % CarModel = 'FullSize';
@@ -26,9 +26,9 @@ ModelParams=getModelParams(MPC_vars.ModelNo);
 % choose optimization interface options: 'Yalmip','CVX','hpipm'
 MPC_vars.interface = 'Yalmip';
 
-nx = ModelParams.nx;
-nu = ModelParams.nu;
-N = MPC_vars.N;
+nx = ModelParams.nx; % MPC number of status
+nu = ModelParams.nu; % MPC number of inputs
+N = MPC_vars.N; % MPC Horizon
 Ts = MPC_vars.Ts;
 %% import an plot track
 % use normal ORCA Track
@@ -49,6 +49,8 @@ hold on
 plot(track.inner(1,:),track.inner(2,:),'r')
 plot(track2.outer(1,:),track2.outer(2,:),'k')
 plot(track2.inner(1,:),track2.inner(2,:),'k')
+% The track is defined as a structure with the inner, outer and center
+% board. 
 %% Simulation lenght and plotting
 simN = 500;
 %0=no plots, 1=plot predictions
