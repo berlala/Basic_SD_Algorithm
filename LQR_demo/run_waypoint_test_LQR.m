@@ -6,8 +6,8 @@
  %addpath(genpath('way point samples'))
 
  %% Config
-Ts      = 0.1; % For Simulink
-v        = 1; %m/s
+Ts      = 0.02; % For Simulink
+v        = 3; %m/s
 Lf =3;%[m]
 
 x_init    = 0;
@@ -55,7 +55,7 @@ y_c =y_init;
 psi_c = psi_init;
 
 hwait=waitbar(0,'In Process>>>>>>>>');
-time = 500;
+time = 800;
 for i = 1:time
  
 waitbar(i/time,hwait,'In Process>>>>');

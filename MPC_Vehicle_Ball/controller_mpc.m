@@ -1,4 +1,4 @@
-function [a ,alpha, memory] = controller_lqr2(x_car,y_car,psi,v,memory,Goal_inf, N)
+function [a ,alpha, memory] = controller_mpc(x_car,y_car,psi,v,memory,Goal_inf, N)
        %% import last step input  
         % set parameters and reference, with current state as equilibrium
 Ts = 0.05;

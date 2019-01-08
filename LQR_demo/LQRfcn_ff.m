@@ -8,13 +8,13 @@ function [delta,pe,th_e,ind] = LQRfcn_ff( x_c,y_c,psi_c, RouteMapArray, CurvDerV
 lr = 1.5;
 lf = 1.7;
 Iz = 3600;
-dt = 0.1; % sample time
+dt = 0.02; % sample time
 Cf = 36600;
 Cr = Cf;
 m  = 2300;
 %% Config
 
-Preview  = 1; % bigger value will lead failure [to be explored]
+Preview  = 5; % bigger value will lead failure [to be explored]
 L = 3;% wheelbase
 
 %%
@@ -37,8 +37,6 @@ y_tg = RouteMapArray(tgt,2);
 
 psi_tg= RouteMapArray(tgt,3);
 %psi_tg = 1.5764;
-
-
 k = CurvDerVehMap(tgt);
 
 %e = sqrt((x_tg-x_c)^2 +(y_tg-y_c)^2);
@@ -58,13 +56,13 @@ A = sysd.a;
 B = sysd.b;
 
 Q = eye(4);
-Q(1,1) = 40; %big value lead failure [To be explored]: This value should be related to the initial error...
+Q(1,1) = 4 ;%big value lead failure [To be explored]: This value should be related to the initial error...
 %... try sqrt(1/Q(1,1)) = max_initial_error
-Q(2,2) = 3;
-Q(3,3) = 10;
-Q(4,4) =3;
+Q(2,2) = 1;
+Q(3,3) = 5;
+Q(4,4) =1;
 
-R = eye(1);
+R = eye(1)*10;
 
 %coder.extrinsic('dlqr');
 [K_lqr, ~, ~ ]= dlqr(A, B, Q, R);
