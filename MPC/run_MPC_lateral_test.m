@@ -15,7 +15,7 @@ tips = regexp(Cur,'\');
 
  %% Config
 Ts      = 0.05; % For Plant Update
-v        = 3; %m/s
+v        = 10; %m/s
 display(['Simulation velocity is =', num2str(v*3.6), 'Km/h'] )
 
 x_init    = 0;

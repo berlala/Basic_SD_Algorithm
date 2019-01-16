@@ -23,9 +23,9 @@ ays = 0;
 xg = 0;
 yg =  30;
 vxg =-2;
-vyg = 0;
+vyg =0;
 axg =0;
-ayg = 0;
+ayg =0;
 
 %% Path Geneartion
 
