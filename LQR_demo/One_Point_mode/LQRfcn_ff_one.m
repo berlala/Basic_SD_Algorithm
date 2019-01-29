@@ -54,13 +54,13 @@ A = sysd.a;
 B = sysd.b;
 
 Q = eye(4);
-Q(1,1) = 1; %big value lead failure [To be explored]: This value should be related to the initial error...
+Q(1,1) = 5; %big value lead failure [To be explored]: This value should be related to the initial error...
 %... try sqrt(1/Q(1,1)) = max_initial_error
 Q(2,2) = 1;
-Q(3,3) = 1;
+Q(3,3) = 4;
 Q(4,4) = 1;
 
-R = eye(1)*10;
+R = eye(1)*1;
 
 %coder.extrinsic('dlqr'); 
 [K_lqr, ~, ~ ]= dlqr(A, B, Q, R);

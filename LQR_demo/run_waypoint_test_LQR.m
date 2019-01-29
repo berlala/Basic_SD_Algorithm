@@ -7,16 +7,19 @@
 
  %% Config
 Ts      = 0.02; % For Simulink
-v        = 3; %m/s
+v        = 5; %m/s
 Lf =3;%[m]
 
 x_init    = 0;
 y_init    = -1;
 psi_init  = 0;
 
+Gain_f = 0.8;
+Gain_fb =0.8;
+Preview =10;
 %%
-%load WP_LT_02;
-load WP_UT_02;
+load WP_LT_02;
+%load WP_UT_02;
 
 
 Spiral_Msg = double(Spiral_Msg); % Force DataType change
@@ -49,18 +52,21 @@ dis =  Spiral_Msg(:,5);
 %initial_ENH = [x_init,y_init,psi_init];
 
 SteerCmd_h = [];x_real = [];y_real = [];psi_real = [];delta_log = [];index_target_log = [];
-pe = 0; pth_e = 0; delta_f = 0;
+pe = 0; pth_e = 0; p_delta = 0; delta_f = 0;
 x_c =x_init;
 y_c =y_init;
 psi_c = psi_init;
 
 hwait=waitbar(0,'In Process>>>>>>>>');
-time = 800;
+time = 500;
 for i = 1:time
  
 waitbar(i/time,hwait,'In Process>>>>');
  %[delta,e, th_e] = LQRfcn_apollo(x_c,y_c,psi_c, RouteMapArray, CurvDerVehMap, v, pe, pth_e) ;  
- [delta,e, th_e,index_target] = LQRfcn_ff(x_c,y_c,psi_c, RouteMapArray, CurvDerVehMap, v, pe, pth_e) ;  
+%[delta,e, th_e,index_target] = LQRfcn_ff(x_c,y_c,psi_c, RouteMapArray, CurvDerVehMap, v, pe, pth_e) ;  
+
+initial_ENH = [x_c,y_c, psi_c];
+ [delta,e,th_e,ind,index_target] = LQRfcn_bl(initial_ENH, RouteMapArray, CurvDerVehMap, v, pe, pth_e, p_delta ,Gain_f,Gain_fb,Preview);
  
  delta_f = delta;
 %%%%Discrete Model Simulation%%%
@@ -76,6 +82,7 @@ psi_c = psi_c + v /(Lf)*tan(delta_f) * Ts;
 % %%%%%%%%%%
 pe = e;
 pth_e = th_e;
+p_delta = delta;
 
 x_real = [x_real;x_c];
 y_real = [y_real;y_c];

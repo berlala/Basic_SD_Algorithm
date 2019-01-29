@@ -67,8 +67,6 @@ psi_c = psi_init;
 hwait=waitbar(0,'In Process>>>>>>>>');
 time = 2000;
 
-
-
 for i = 1:time
  
 waitbar(i/time,hwait,'In Process>>>>');
