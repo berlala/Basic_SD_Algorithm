@@ -3,21 +3,26 @@
 % In thie version, the velocity is planned by a Quintic Planner.
 % this tool is used  to generate the desire path [RouteMapArray] for
 % simulation
+
+%% Issue List:
+%1) [fuc_spiral_generation] do not support the U turn.
+%2) Quintic velocity planner generate the velocity profile not like human driver 
+
+%%
 clc;
 clear;close all
 load_spiral_init_para;
 %%  Config
 % Data: [X, Y, Heading, Curvature(steeringwheel), Velocity ]
 % In Path_points, pls. edit the key point that the path need to be passed.
-Path_points = [0,0,0,0,3/3.6;
-                           10,0,0,0,2/3.6];
+Path_points = [0,0,0,0,8/3.6;
+                           80,0,0,0,8/3.6];
 %%
 step_length = 0.2;
 v_max = 10/3.6;
 RouteMapArray_gen = [];
 
 t = 0.01;
-
 %%
 for i = 1:length(Path_points(:,1))-1
     
@@ -75,10 +80,10 @@ Heading = (RouteMapArray(1,3)-start_point(3) )*180/pi;
 RotMat = [cosd(Heading), sind(Heading); ...
                    -sind(Heading), cosd(Heading)];
 Local_GB = [];
-for i = 1:length(Local_XY)
-    Local_GB(i,:) =   RotMat*[Local_XY(i,1), ...
-                                                   Local_XY(i,2)]';
-    Local_GB(i,:)  =  Local_GB(i,:) +    start_point(1:2);        
+for ii = 1:length(Local_XY)
+    Local_GB(ii,:) =   RotMat*[Local_XY(ii,1), ...
+                                                   Local_XY(ii,2)]';
+    Local_GB(ii,:)  =  Local_GB(ii,:) +    start_point(1:2);        
 end
 Heading_GB = RouteMapArray(:,3)+start_point(3);
 if ~isempty(RouteMapArray_gen) 
@@ -109,6 +114,8 @@ title('Velocity[m/s]')
 figure(2)
 subplot(2,1,1)
 plot(T_final, RouteMapArray_gen(:,6));
-xlabel('Time[s]')
+ylabel('Velocity[m/s]')
 subplot(2,1,2)
 plot(T_final, RouteMapArray_gen(:,7));
+xlabel('Time[s]')
+ylabel('Acceleration[m/s^2]')
