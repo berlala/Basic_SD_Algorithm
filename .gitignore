@@ -1,0 +1,15 @@
+#git ignore for Matlab Project
+#ignore slprj folder
+*/slprj/
+/slprj/
+*/CarSim_CompareData_1/
+CarSim_CompareData_1
+*/CarSim_CompareData_2/
+CarSim_CompareData_2
+
+#ignore slxc,asv
+*asv
+*slxc
+*mexw32
+*mexw64
+*autosave
