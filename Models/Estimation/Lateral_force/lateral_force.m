@@ -10,15 +10,13 @@ clear;   % 1  for left
 %data = csvread('80kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
 %data = csvread('90kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
 %data = csvread("20kmh_MKZ0310_1.csv",2,0); % MKZ data update with Force
-%data = csvread("40kmh_MKZ0310_F.csv",2,0); % MKZ data update with Force
-data = csvread("80kmh_MKZ0310_F.csv",2,0);
+data = csvread("40kmh_MKZ0310_F.csv",2,0); % MKZ data update with Force
+%data = csvread("80kmh_MKZ0310_F.csv",2,0);
+
 %related parameters
 
 % Parameters from CarSim
-sw_max = 29 ; %[deg], max front wheel steering angle
 sw_ratio = 15.4;
-Cf = 1e5;
-Cr = 1.1e5;
 lf = 1.328;
 lr = 1.482;
 ll = lf+lr;

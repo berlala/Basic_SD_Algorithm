@@ -4,15 +4,15 @@ clear;   % 1  for left
 
 %MKZ
 %Time,Ax,Ay,Vx,Vy,Yaw,Steer_SW,AVz,X_S1,Y_S1
-%data = csvread('40kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
+data = csvread('40kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
 %data = csvread('80kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
-data = csvread('90kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
+%data = csvread('90kmh_dlc_MKZ0309.csv', 2 ,0); %MKZ data
 %related parameters
 
 % Parameters from CarSim
 sw_max = 29 ; %[deg], max front wheel steering angle
 sw_ratio = 15.4;
-Cf = 1e5;
+Cf = 1e5; %Axle 
 Cr = 1.1e5;
 lf = 1.328;
 lr = 1.482;
@@ -38,7 +38,7 @@ disp('MKZ CarSim record All Data have been loaded.')
 %     psi_dot_veh(index) = psi_dot(i);
 % end
 
-%%
+%% 
 y_obs_log = zeros(length(ax),2);
 for i = 1:length(ax)
 
@@ -50,9 +50,10 @@ for i = 1:length(ax)
  y_obs_log(i,:) = y_obs';
  
 end
+vy_obs = y_obs_log(:,1);
   %%
   
-  plot(y_obs_log(:,1));hold on
+  plot(vy_obs);hold on
   plot(vy); % lateral velocity from the GPS process data
   legend('Direct Obs','Carsim Real')
   title('MKZ Carsim data @ 90km/h')

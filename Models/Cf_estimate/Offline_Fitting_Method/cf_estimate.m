@@ -107,10 +107,11 @@ end
 figure(2)
 subplot(2,1,1)
 plot(alpha_f, F_xf,'.'); hold on
+ylabel('Front lateral force [N]')
 subplot(2,1,2)
 plot(alpha_r, F_xr,'.'); hold on
 xlabel('slip angle[rad]')
-ylabel('lateral force [N]')
+ylabel('Rear lateral force [N]')
 %% Calulate the Stiffness
 for i= 1:length(F_xr)
 Cf(i) = F_xf(i)/(alpha_f(i)/pi*180);
@@ -125,27 +126,30 @@ end
 
 Cf_mean = mean(Cf);
 Cr_mean = mean(Cr);
-%% Rear
+%% Rear Axle
 K_data = [alpha_r;F_xr]';
  [Idx,C]=kmeans(K_data,20);
-figure(2)
+ figure(2)
+subplot(2,1,2)
 plot(C(:,1), C(:,2),'o','linewidth',3);hold on
  pf = polyfit(C(:,1), C(:,2), 1);
  aa = [-0.2:0.01:0.2];
  bb  = pf(1)*aa + pf(2);
  disp([pf(1)])
  plot(aa , bb,'linewidth',3)
- %% Front
+  legend('Rear','Rear fit line')
+ %% Front Axle
  K_data = [alpha_f;F_xf]';
  [Idx,C]=kmeans(K_data,20);
-figure(2)
+ figure(2)
+subplot(2,1,1)
 plot(C(:,1), C(:,2),'o','linewidth',3);hold on
  pf = polyfit(C(:,1), C(:,2), 1);
  aa = [-0.2:0.01:0.2];
  bb  = pf(1)*aa + pf(2);
  disp(pf(1))
  plot(aa , bb,'linewidth',3)
-  legend('Rear','Rear fit line','Front','Front fit line')
+  legend('Front','Front fit line')
   xlabel('Slip Angle[rad]')
  ylabel('Lateral Force[N]')
  
